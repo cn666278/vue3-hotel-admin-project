@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
+import { $Login } from "../api/admin";
 
 // 定义表单实例
 const formRef = ref<FormInstance>();
@@ -66,15 +67,16 @@ const rules = reactive<FormRules<typeof formData>>({
 
 // 提交表单
 const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
+  if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
-      console.log("submit!");
+      $Login(formData)
     } else {
-      console.log("error submit!");
+      console.log('error submit!')
+      // return false
     }
-  });
-};
+  })
+}
 
 // 重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
