@@ -11,11 +11,11 @@
         :rules="rules"
         label-width="40px"
       >
-        <el-form-item label="账号" prop="loginId">
-          <el-input v-model="formData.loginId" />
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="formData.username" />
         </el-form-item>
-        <el-form-item label="密码" prop="loginPwd">
-          <el-input v-model="formData.loginPwd" type="password" />
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="formData.password" type="password" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm(formRef)">
@@ -30,13 +30,13 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import { $Login } from "../api/admin";
+import { $Login } from "../api/admin.ts";
 
 // 定义表单实例
 const formRef = ref<FormInstance>();
 
 // 验证账号
-const validateLoginId = (rule: any, value: any, callback: any) => {
+const validateUsername = (_: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请输入账号"));
   } else {
@@ -45,7 +45,7 @@ const validateLoginId = (rule: any, value: any, callback: any) => {
 };
 
 // 验证密码
-const validatePassword = (rule: any, value: any, callback: any) => {
+const validatePassword = (_: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请输入密码"));
   } else {
@@ -55,14 +55,14 @@ const validatePassword = (rule: any, value: any, callback: any) => {
 
 // 表单数据
 const formData = reactive({
-  loginId: "",
-  loginPwd: "",
+  username: "",
+  password: "",
 });
 
 // 验证对象
 const rules = reactive<FormRules<typeof formData>>({
-  loginId: [{ validator: validateLoginId, trigger: "blur" }],
-  loginPwd: [{ validator: validatePassword, trigger: "blur" }],
+  username: [{ validator: validateUsername, trigger: "blur" }],
+  password: [{ validator: validatePassword, trigger: "blur" }],
 });
 
 // 提交表单
