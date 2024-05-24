@@ -1,6 +1,6 @@
 <template>
     <div>
-        index
+        Home
     </div>
 </template>
 <script setup lang='ts'>

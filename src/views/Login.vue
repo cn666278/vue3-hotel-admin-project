@@ -31,6 +31,10 @@
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { $Login } from "../api/admin.ts";
+import { useRouter } from "vue-router";
+
+// 路由实例
+const router = useRouter();
 
 // 定义表单实例
 const formRef = ref<FormInstance>();
@@ -68,9 +72,16 @@ const rules = reactive<FormRules<typeof formData>>({
 // 提交表单
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
-      $Login(formData)
+      let res = await $Login(formData)
+      if( res.code == 200 ) {
+        console.log('login success')
+        // 跳转到首页
+        router.push('/home')
+      } else {
+        console.log('login failed')
+      }
     } else {
       console.log('error submit!')
       // return false

@@ -13,9 +13,9 @@ const routes = createRouter({
       redirect: "/",
     },
     {
-      path: "/index",
-      name: "Index",
-      component: () => import("../views/Index.vue"),
+      path: "/home",
+      name: "Home",
+      component: () => import("../views/Home.vue"),
     },
   ],
 });
