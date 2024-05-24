@@ -78,7 +78,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
       if( res.code == 200 ) {
         console.log('login success')
         // 跳转到首页
-        router.push('/home')
+        router.push('/main')
       } else {
         console.log('login failed')
       }

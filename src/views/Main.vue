@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="main">
     <div class="left">
       <h2>SM酒店管理综合平台</h2>
       <el-menu
@@ -93,7 +93,7 @@ import {
 </script>
 <style lang="scss">
 // todo:考虑把header, left, right, footer抽离成组件
-.home {
+.main {
   width: 100vw; // 100% of the viewport width
   height: 100vh;
   display: flex;
