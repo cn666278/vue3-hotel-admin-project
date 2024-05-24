@@ -11,7 +11,7 @@
       >
         <el-sub-menu index="1">
           <template #title>
-            <el-icon><UserFilled /></el-icon>
+            <el-icon><Avatar /></el-icon>
             <span>账户管理</span>
           </template>
           <el-menu-item index="1-1">角色管理</el-menu-item>
@@ -19,7 +19,7 @@
         </el-sub-menu>
         <el-sub-menu index="2">
           <template #title>
-            <el-icon><HomeFilled /></el-icon>
+            <el-icon><Histogram /></el-icon>
             <span>客房管理</span>
           </template>
           <el-menu-item index="2-1">房型管理</el-menu-item>
@@ -44,13 +44,52 @@
       </el-menu>
     </div>
     <div class="right">
-      <div class="top">2</div>
+      <div class="top">
+        <el-menu
+          mode="horizontal"
+          background-color="#142334"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          :ellipsis="false"
+        >
+          <el-menu-item index="1">
+            <el-icon><House /></el-icon>
+            首页
+          </el-menu-item>
+          <el-menu-item index="2">
+            <el-icon><Message /></el-icon>
+            邮件
+          </el-menu-item>
+          <el-menu-item index="3">
+            <el-icon><ChatDotRound /></el-icon>
+            消息
+          </el-menu-item>
+          <el-sub-menu index="4">
+            <template #title>
+              <el-icon><User /></el-icon>
+              管理员
+            </template>
+            <el-menu-item index="2-1">个人中心</el-menu-item>
+            <el-menu-item index="2-2">修改密码</el-menu-item>
+            <el-menu-item index="2-3">退出系统</el-menu-item>
+          </el-sub-menu>
+        </el-menu>
+      </div>
       <div class="content">3</div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { UserFilled, HomeFilled, Briefcase, Tools } from "@element-plus/icons-vue";
+import {
+  House,
+  Briefcase,
+  Tools,
+  Histogram,
+  Message,
+  ChatDotRound,
+  Avatar,
+  User,
+} from "@element-plus/icons-vue";
 </script>
 <style lang="scss">
 // todo:考虑把header, left, right, footer抽离成组件
@@ -81,10 +120,17 @@ import { UserFilled, HomeFilled, Briefcase, Tools } from "@element-plus/icons-vu
       height: 60px;
       background-color: #142334;
       color: white;
+      display: flex;
+      justify-content: flex-end;
+      .el-menu {
+        // 去除下侧边框
+        border-bottom: none;
+      }
     }
     .content {
       flex: 1;
       background-color: white;
+      padding: 10px;
     }
   }
 }
