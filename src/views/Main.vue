@@ -3,6 +3,7 @@
     <div class="left">
       <h2>SM酒店管理综合平台</h2>
       <el-menu
+        router
         active-text-color="#ffd04b"
         background-color="#142334"
         class="el-menu-vertical-demo"
@@ -14,64 +15,65 @@
             <el-icon><Avatar /></el-icon>
             <span>账户管理</span>
           </template>
-          <el-menu-item index="1-1">角色管理</el-menu-item>
-          <el-menu-item index="1-2">用户管理</el-menu-item>
+          <el-menu-item index="/role">角色管理</el-menu-item>
+          <el-menu-item index="/user">用户管理</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
           <template #title>
             <el-icon><Histogram /></el-icon>
             <span>客房管理</span>
           </template>
-          <el-menu-item index="2-1">房型管理</el-menu-item>
-          <el-menu-item index="2-2">房间管理</el-menu-item>
+          <el-menu-item index="/room-type">房型管理</el-menu-item>
+          <el-menu-item index="/room">房间管理</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="3">
           <template #title>
             <el-icon><Briefcase /></el-icon>
             <span>客户管理</span>
           </template>
-          <el-menu-item index="3-1">入住管理</el-menu-item>
-          <el-menu-item index="3-2">客户订单</el-menu-item>
+          <el-menu-item index="/check-in">入住管理</el-menu-item>
+          <el-menu-item index="/order">客户订单</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="4">
           <template #title>
             <el-icon><Tools /></el-icon>
             <span>系统管理</span>
           </template>
-          <el-menu-item index="4-1">菜单管理</el-menu-item>
-          <el-menu-item index="4-2">字典管理</el-menu-item>
+          <el-menu-item index="/menu">菜单管理</el-menu-item>
+          <el-menu-item index="/dictionary">字典管理</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </div>
     <div class="right">
       <div class="top">
         <el-menu
+          router
           mode="horizontal"
           background-color="#142334"
           text-color="#fff"
           active-text-color="#ffd04b"
           :ellipsis="false"
         >
-          <el-menu-item index="1">
+          <el-menu-item index="/home">
             <el-icon><House /></el-icon>
             首页
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="/mail">
             <el-icon><Message /></el-icon>
             邮件
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="/message">
             <el-icon><ChatDotRound /></el-icon>
             消息
           </el-menu-item>
-          <el-sub-menu index="4">
+          <el-sub-menu index="admin">
             <template #title>
               <el-icon><User /></el-icon>
               管理员
             </template>
-            <el-menu-item index="2-1">个人中心</el-menu-item>
-            <el-menu-item index="2-2">修改密码</el-menu-item>
-            <el-menu-item index="2-3">退出系统</el-menu-item>
+            <el-menu-item index="/personal">个人中心</el-menu-item>
+            <el-menu-item index="/set-password">修改密码</el-menu-item>
+            <el-menu-item index="">退出登录</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </div>
