@@ -75,7 +75,10 @@
           </el-sub-menu>
         </el-menu>
       </div>
-      <div class="content">3</div>
+      <div class="content">
+        <!-- 添加路由出口，通过路由渲染组件 -->
+        <router-view></router-view> 
+      </div>
     </div>
   </div>
 </template>
