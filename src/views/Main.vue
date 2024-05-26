@@ -95,6 +95,20 @@ import {
   Avatar,
   User,
 } from "@element-plus/icons-vue";
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
+import useUser from "../store/user.ts";
+
+let userStore = useUser();
+let router = useRouter();
+
+// 检查用户是否登录, 如果没有登录则跳转到登录页面
+onMounted(() => {
+  if(!userStore.user.username){
+    router.push('/');
+  }
+});
+
 </script>
 <style lang="scss">
 // todo:考虑把header, left, right, footer抽离成组件

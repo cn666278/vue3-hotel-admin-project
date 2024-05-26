@@ -30,11 +30,15 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import { $Login } from "../api/admin.ts";
+import { $Login, $getOneUser } from "../api/admin.ts";
 import { useRouter } from "vue-router";
+import useUser from "../store/user.ts";
 
 // 路由实例
 const router = useRouter();
+
+// 获取用户全局状态
+const userStore = useUser();
 
 // 定义表单实例
 const formRef = ref<FormInstance>();
@@ -76,7 +80,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       let res = await $Login(formData)
       if( res.code == 200 ) {
-        console.log('login success')
+        let user = await $getOneUser({username: formData.username})
+        userStore.setUser(user)
         // 跳转到首页
         router.push('/main')
       } else {

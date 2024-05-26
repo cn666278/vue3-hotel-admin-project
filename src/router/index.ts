@@ -106,7 +106,6 @@ const routes = createRouter({
 
 // 路由守卫，判断是否登录，未登录跳转到登录页
 routes.beforeEach((to, from, next) => {
-  // NProgress.start(); // 进度条开始
   next();
 });
 
@@ -116,6 +115,5 @@ routes.afterEach((to, from) => {
   if (to.meta.title) {
     document.title = String(to.meta.title);
   }
-  // NProgress.done(); // 进度条结束
 });
 export default routes;

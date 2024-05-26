@@ -1,4 +1,4 @@
-import { $post } from "../utils/request.ts";
+import { $get, $post } from "../utils/request.ts";
 import { md5 } from "md5js";
 import { ElNotification } from "element-plus";
 
@@ -30,3 +30,10 @@ export const $Login = async (params: object | any) => {
   }
   return res;
 };
+
+//获取一个用户的信息
+export const $getOneUser = async (params: object) => {
+  let res = await $get("admin/getOne", params);
+  console.log(res);
+  return res;
+}
