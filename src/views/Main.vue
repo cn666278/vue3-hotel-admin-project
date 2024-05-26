@@ -73,7 +73,7 @@
             </template>
             <el-menu-item index="/personal">个人中心</el-menu-item>
             <el-menu-item index="/set-password">修改密码</el-menu-item>
-            <el-menu-item index="">退出登录</el-menu-item>
+            <el-menu-item index="" @click="exit">退出登录</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </div>
@@ -95,6 +95,7 @@ import {
   Avatar,
   User,
 } from "@element-plus/icons-vue";
+import { ElMessageBox } from 'element-plus'
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import useUser from "../store/user.ts";
@@ -108,6 +109,20 @@ onMounted(() => {
     router.push('/');
   }
 });
+
+// 退出登录
+const exit = () => {
+  ElMessageBox.confirm('确定退出登录吗?', '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    userStore.clearUser();
+    router.push('/');
+  }).catch(() => {
+    console.log('取消退出登录');
+  });
+};
 
 </script>
 <style lang="scss">

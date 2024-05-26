@@ -28,7 +28,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { $Login, $getUserInfo } from "../api/admin.ts";
 import { useRouter } from "vue-router";
@@ -101,6 +101,13 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+
+// 检查用户是否登录, 如果已经登录则跳转到首页
+onMounted(() => {
+  if (userStore.user.username) {
+    router.push("/main");
+  }
+})
 </script>
 
 <style scoped lang="scss">

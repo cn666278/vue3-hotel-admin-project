@@ -10,6 +10,12 @@ export default defineStore("user", {
     setUser(user: { username: string }) {
       this.user = user;
     },
+    clearUser() {
+      sessionStorage.clear();
+      this.user = {
+        username: "",
+      };
+    },
   },
   // 数据持久化
   // sessionStorage和localStorage的区别：https://juejin.cn/post/7350143110495518770?searchId=202405270037574BB40A1CE415E404A17A
