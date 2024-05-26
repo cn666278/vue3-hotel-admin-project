@@ -104,7 +104,6 @@ let router = useRouter();
 
 // 检查用户是否登录, 如果没有登录则跳转到登录页面
 onMounted(() => {
-  console.log(userStore.user.username);
   if(!userStore.user.username){
     router.push('/');
   }
