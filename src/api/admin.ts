@@ -32,8 +32,8 @@ export const $Login = async (params: object | any) => {
 };
 
 //获取一个用户的信息
-export const $getOneUser = async (params: object) => {
-  let res = await $get("admin/getOne", params);
+export const $getUserInfo = async (params: object) => {
+  let res = await $get("admin/getUserInfo", params);
   console.log(res);
   return res;
 }

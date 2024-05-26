@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import { $Login, $getOneUser } from "../api/admin.ts";
+import { $Login, $getUserInfo } from "../api/admin.ts";
 import { useRouter } from "vue-router";
 import useUser from "../store/user.ts";
 
@@ -80,8 +80,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       let res = await $Login(formData)
       if( res.code == 200 ) {
-        let user = await $getOneUser({username: formData.username})
+        let user = await $getUserInfo({username: formData.username})
+        console.log(user)
         userStore.setUser(user)
+        console.log('login success')
         // 跳转到首页
         router.push('/main')
       } else {
