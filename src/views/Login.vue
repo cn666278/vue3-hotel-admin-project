@@ -85,7 +85,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         userStore.setUser(user)
         console.log('login success')
         // 跳转到首页
-        router.push('/main')
+        router.push('/home')
       } else {
         console.log('login failed')
       }
@@ -105,7 +105,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 // 检查用户是否登录, 如果已经登录则跳转到首页
 onMounted(() => {
   if (userStore.user.username) {
-    router.push("/main");
+    router.push("/home");
   }
 })
 </script>

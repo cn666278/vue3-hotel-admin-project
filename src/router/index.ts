@@ -16,7 +16,7 @@ const routes = createRouter({
       redirect: "/",
     },
     {
-      path: "/main",
+      path: "/home",
       name: "主页",
       meta: {title: "主页"},
       component: () => import("../views/Main.vue"),
@@ -34,7 +34,7 @@ const routes = createRouter({
           component: () => import("../views/customer/Order.vue"),
         },
         {
-          path: "/home",
+          path: "",
           name: "首页",
           meta: {title: "首页"},
           component: () => import("../views/home/Home.vue"),
