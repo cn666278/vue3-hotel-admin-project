@@ -12,6 +12,7 @@
     "axios": "^1.7.1",
     "element-plus": "^2.7.3",
     "md5js": "^1.0.7",
+    "mockjs": "^1.1.0",
     "pace-progressbar": "^1.0.10",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
@@ -19,6 +20,7 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@types/mockjs": "^1.0.10",
     "@vitejs/plugin-vue": "^5.0.4",
     "sass": "^1.77.2",
     "sass-loader": "^14.2.1",
