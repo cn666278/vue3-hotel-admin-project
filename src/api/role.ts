@@ -39,32 +39,30 @@ function param2Obj(url: string) {
 }
 
 let List: any[] = []
-const count = 200
 
-for (let i = 0; i < count; i++) {
-  List.push(
-    Mock.mock({
-      id: Mock.Random.guid(),
-      name: Mock.Random.cname(),
-      addr: Mock.mock('@county(true)'), 
-      'age|18-60': 1,
-      birth: Mock.Random.date(),
-      sex: Mock.Random.integer(0, 1)
-    })
-  )
-}
+// 模拟数据
+// const count = 200
+
+// for (let i = 0; i < count; i++) {
+//   List.push(
+//     Mock.mock({
+//       id: Mock.Random.guid(),
+//       roleName: Mock.Random.cname(),
+//     })
+//   )
+// }
 
 export default {
   /**
-   * 获取列表
-   * 要带参数 name, page, limit; name可以不填, page, limit有默认值。
-   * @param name, page, limit
+   * 获取角色列表
+   * 要带参数 roleName, page, limit; roleName可以不填, page, limit有默认值。
+   * @param roleName, page, limit
    * @return {{code: number, count: number, data: *[]}}
    */
-  getUserList: (config: { url: any; }) => {
-    const { name, page = 1, limit = 20 } = param2Obj(config.url)
-    const mockList = List.filter(user => {
-      if (name && user.name.indexOf(name) === -1 && user.addr.indexOf(name) === -1) return false
+  getRoleList: (config: { url: any; }) => {
+    const { roleName, page = 1, limit = 20 } = param2Obj(config.url)
+    const mockList = List.filter(role => {
+      if (roleName && role.roleName.indexOf(roleName) === -1) return false
       return true
     })
     const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
@@ -78,24 +76,20 @@ export default {
   },
   /**
    * 增加用户
-   * @param name, addr, age, birth, sex
+   * @param roleName
    * @return {{code: number, data: {message: string}}}
    */
-  createUser: (config: { body: string; }) => {
-    const { name, addr, age, birth, sex } = JSON.parse(config.body)
+  addRole: (config: { body: string; }) => {
+    const { roleName } = JSON.parse(config.body)
     console.log(JSON.parse(config.body))
     List.unshift({
       id: Mock.Random.guid(),
-      name: name,
-      addr: addr,
-      age: age,
-      birth: birth,
-      sex: sex
+      roleName: roleName,
     })
     return {
       code: 200,
       data: {
-        message: 'Add Success'
+        message: '添加成功'
       }
     }
   },
@@ -104,18 +98,18 @@ export default {
    * @param id
    * @return {*}
    */
-  deleteUser: (config: { url: any; }) => {
+  deleteRole: (config: { url: any; }) => {
     const { id } = param2Obj(config.url)
     if (!id) {
       return {
         code: -999,
-        message: 'Parameter id is required'
+        message: '需要提供用户id'
       }
     } else {
       List = List.filter(u => u.id !== id)
       return {
         code: 200,
-        message: 'Delete Success'
+        message: '删除成功'
       }
     }
   },
@@ -137,26 +131,21 @@ export default {
   },
   /**
    * 修改用户
-   * @param id, name, addr, age, birth, sex
+   * @param id, roleName
    * @return {{code: number, data: {message: string}}}
    */
-  updateUser: (config: { body: string; }) => {
-    const { id, name, addr, age, birth, sex } = JSON.parse(config.body)
-    const sex_num = parseInt(sex)
+  updateRole: (config: { body: string; }) => {
+    const { id, roleName } = JSON.parse(config.body)
     List.some(u => {
       if (u.id === id) {
-        u.name = name
-        u.addr = addr
-        u.age = age
-        u.birth = birth
-        u.sex = sex_num
+        u.roleName = roleName
         return true
       }
     })
     return {
       code: 200,
       data: {
-        message: 'Edit Success'
+        message: '编辑成功'
       }
     }
   }
