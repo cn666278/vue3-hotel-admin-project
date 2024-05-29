@@ -27,7 +27,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <EditRole ref="editDrawerRef"></EditRole>
+    <EditRole ref="editDrawerRef" @update-role-list="loadRoles"></EditRole>
   </div>
 </template>
 

@@ -29,8 +29,12 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, FormRules } from "element-plus";
+import { FormInstance, FormRules, ElNotification } from "element-plus";
 import { reactive, ref } from "vue";
+import { $addRole } from "../../api/role.ts";
+
+// 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
+const emit = defineEmits(["update-role-list"]);
 
 // 抽屉
 const drawer = ref(false);
@@ -68,6 +72,24 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async (valid) => {
     if (valid) {
+      const res = await $addRole(formData);
+      if (res.code === 200) {
+        ElNotification({
+          title: "提示",
+          message: res.data.message,
+          type: "success",
+        });
+        emit("update-role-list"); // 同步列表数据 todo: 当前使用mock数据, 无法同步
+        handleClose(); // 关闭抽屉
+        console.log("success submit!");
+      } else {
+        ElNotification({
+          title: "提示",
+          message: res.data.message,
+          type: "error",
+        });
+        console.log("error submit!");
+      }
     } else {
       console.log("error submit!");
       // return false;
