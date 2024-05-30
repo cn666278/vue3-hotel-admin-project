@@ -20,7 +20,7 @@
           <el-button
             size="small"
             type="danger"
-            @click="handleDelete(scope.row.roleId)"
+            @click="handleDelete(scope.row)"
           >
             删除
           </el-button>
@@ -41,7 +41,8 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import EditRole from "../../components/user/EditRole.vue";
-import { $list } from "../../api/role.ts";
+import { $list, $deleteRole } from "../../api/role.ts";
+import { ElMessageBox, ElNotification } from "element-plus";
 
 // 角色列表
 let roles = ref<any[]>([]);
@@ -68,8 +69,35 @@ const handleEdit = (roleId: number) => {
 };
 
 // 删除角色
-const handleDelete = (roleId: number) => {
-  console.log(roleId);
+const handleDelete = (row: any) => {
+  console.log(row);
+  ElMessageBox.confirm("确定删除用户 " + row.roleName + " 吗?", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      let res = await $deleteRole(row.roleId);
+      if (res.code === 200) {
+        ElNotification({
+          title: "提示",
+          message: res.data.message,
+          type: "success",
+        });
+        // 删除成功后重新加载角色列表
+        loadRoles();
+        console.log("删除成功");
+      } else {
+        ElNotification({
+          title: "提示",
+          message: res.data.message,
+          type: "error",
+        });
+      }
+    })
+    .catch(() => {
+      console.log("取消删除");
+    });
 };
 
 // 定义编辑组件ref,通过editDrawerRef可以获取组件暴露的实例对象

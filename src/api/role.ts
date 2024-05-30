@@ -31,6 +31,12 @@ export const $addRole = async (params: object) => {
   return res;
 };
 
+// 删除角色
+export const $deleteRole = async (params: object) => {
+  let res = await $post("/role/deleteRole", params);
+  return res;
+};
+
 /*
  * 本地模拟后端数据
  */
