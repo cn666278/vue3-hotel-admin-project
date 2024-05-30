@@ -9,7 +9,7 @@
         添加</el-button
       >
     </div>
-    <el-table :data="roles" stripe style="width: 100%">
+    <el-table :data="showRoles" stripe style="width: 100%">
       <el-table-column prop="roleId" label="ID" width="100" />
       <el-table-column prop="roleName" label="角色名称" width="250" />
       <el-table-column label="操作">
@@ -27,17 +27,35 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      style="margin-top: 5px"
+      background
+      layout="prev, pager, next"
+      :total="roles.length"
+      @current-change="handleCurrentChange"
+    />
     <EditRole ref="editDrawerRef" @update-role-list="loadRoles"></EditRole>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import EditRole from "../../components/user/EditRole.vue";
 import { $list } from "../../api/role.ts";
 
 // 角色列表
-let roles = ref([]);
+let roles = ref<any[]>([]);
+// 分页
+let pageIndex = ref(1);
+// 显示的角色列表
+let showRoles = computed(() => {
+  return roles.value.slice((pageIndex.value - 1) * 10, pageIndex.value * 10);
+});
+
+// 分页改变事件
+const handleCurrentChange = (val: number) => {
+  pageIndex.value = val;
+};
 
 // 加载角色列表
 const loadRoles = async () => {
