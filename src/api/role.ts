@@ -25,6 +25,28 @@ export const $list = async () => {
   return mockList;
 };
 
+// 获取单个角色
+export const $getSingleRole = async (params: object) => {
+  // let res = await $get("/role/getSingleRole", params);
+  let res = {
+    roleId: 1,
+    roleName: "admin",
+  };
+  return res;
+};
+
+// 修改角色
+export const $updateRole = async (params: object) => {
+  // let res = await $post("/role/updateRole", params);
+  let res = {
+    code: 200,
+    data: {
+      message: "修改成功",
+    },
+  };
+  return res;
+};
+
 // 添加角色
 export const $addRole = async (params: object) => {
   let res = await $post("/role/addRole", params);

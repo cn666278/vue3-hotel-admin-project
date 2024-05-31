@@ -2,7 +2,7 @@
   <el-drawer
     size="30%"
     v-model="drawer"
-    title="添加角色"
+    :title="formData.roleId ? '编辑角色' : '添加角色'"
     direction="rtl"
     :before-close="handleClose"
   >
@@ -20,7 +20,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)">
-          添加
+          {{ formData.roleId ? "编辑" : "添加" }}
         </el-button>
         <el-button @click="resetForm(formRef)">重置</el-button>
       </el-form-item>
@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { FormInstance, FormRules, ElNotification } from "element-plus";
 import { reactive, ref } from "vue";
-import { $addRole } from "../../api/role.ts";
+import { $addRole, $updateRole } from "../../api/role.ts";
 
 // 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
 const emit = defineEmits(["update-role-list"]);
@@ -43,13 +43,16 @@ const drawer = ref(false);
 const handleClose = () => {
   drawer.value = false;
   formRef.value?.resetFields(); // 重置表单
+  resetForm(formRef.value); // 重置表单
 };
 
 // 表单实例
 const formRef = ref<FormInstance>();
 
 // 表单数据
-const formData = reactive({
+// 使用ref而不是reactive, 因为ref可以通过.value直接获取值, 而reactive需要通过解构获取
+let formData = ref({
+  roleId: "",
   roleName: "",
 });
 
@@ -72,7 +75,15 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async (valid) => {
     if (valid) {
-      const res = await $addRole(formData);
+      let res;
+      console.log(formData.value);
+      if (formData.value.roleId) {
+        // 编辑
+        res = await $updateRole(formData.value);
+      } else {
+        // 添加
+        res = await $addRole(formData.value);
+      }
       if (res.code === 200) {
         ElNotification({
           title: "提示",
@@ -101,11 +112,17 @@ const submitForm = (formEl: FormInstance | undefined) => {
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
+  // 重置表单数据
+  formData.value = {
+    roleId: "",
+    roleName: "",
+  };
 };
 
-// 暴露抽屉数据
+// 暴露数据
 defineExpose({
   drawer,
+  formData,
 });
 </script>
 

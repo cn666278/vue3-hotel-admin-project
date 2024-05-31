@@ -14,7 +14,7 @@
       <el-table-column prop="roleName" label="角色名称" width="250" />
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.row.roleId)">
+          <el-button size="small" @click="handleEdit(scope.row)">
             编辑
           </el-button>
           <el-button
@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import EditRole from "../../components/user/EditRole.vue";
-import { $list, $deleteRole } from "../../api/role.ts";
+import { $list, $deleteRole, $getSingleRole } from "../../api/role.ts";
 import { ElMessageBox, ElNotification } from "element-plus";
 
 // 角色列表
@@ -64,8 +64,10 @@ const loadRoles = async () => {
 };
 
 // 编辑角色
-const handleEdit = (roleId: number) => {
-  console.log(roleId);
+const handleEdit = async (row: any) => {
+  let res = await $getSingleRole(row.roleId);
+  editDrawerRef.value.formData = res;
+  editDrawerRef.value.drawer = true;
 };
 
 // 删除角色
