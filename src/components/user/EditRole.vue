@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { FormInstance, FormRules, ElNotification } from "element-plus";
 import { reactive, ref } from "vue";
-import { $addRole, $updateRole } from "../../api/role.ts";
+import { $addRole, $updateRole } from "../../api/mockData/role.ts";
 
 // 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
 const emit = defineEmits(["update-role-list"]);
@@ -76,7 +76,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
   formEl.validate(async (valid) => {
     if (valid) {
       let res;
-      console.log(formData.value);
       if (formData.value.roleId) {
         // 编辑
         res = await $updateRole(formData.value);
@@ -85,12 +84,13 @@ const submitForm = (formEl: FormInstance | undefined) => {
         res = await $addRole(formData.value);
       }
       if (res.code === 200) {
+        console.log(res.data.message);
         ElNotification({
           title: "提示",
           message: res.data.message,
           type: "success",
         });
-        emit("update-role-list"); // 同步列表数据 todo: 当前使用mock数据, 无法同步
+        emit("update-role-list"); // 同步列表数据 
         handleClose(); // 关闭抽屉
         console.log("success submit!");
       } else {

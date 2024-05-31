@@ -34,18 +34,19 @@
       :total="roles.length"
       @current-change="handleCurrentChange"
     />
-    <EditRole ref="editDrawerRef" @update-role-list="loadRoles"></EditRole>
+    <EditRole ref="editDrawerRef" @update-role-list="getRoleList"></EditRole>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import EditRole from "../../components/user/EditRole.vue";
-import { $list, $deleteRole, $getSingleRole } from "../../api/role.ts";
+import { $getRoleList, $deleteRole, $getSingleRole } from "../../api/mockData/role.ts";
 import { ElMessageBox, ElNotification } from "element-plus";
 
 // 角色列表
-let roles = ref<any[]>([]);
+// let roles = ref([]);
+let roles = ref<object[]>([]);
 // 分页
 let pageIndex = ref(1);
 // 显示的角色列表
@@ -59,8 +60,9 @@ const handleCurrentChange = (val: number) => {
 };
 
 // 加载角色列表
-const loadRoles = async () => {
-  roles.value = await $list();
+const getRoleList = async () => {
+  console.log("加载角色列表");
+  roles.value = await $getRoleList();
 };
 
 // 编辑角色
@@ -83,16 +85,16 @@ const handleDelete = (row: any) => {
       if (res.code === 200) {
         ElNotification({
           title: "提示",
-          message: res.data.message,
+          message: res.message,
           type: "success",
         });
         // 删除成功后重新加载角色列表
-        loadRoles();
+        getRoleList();
         console.log("删除成功");
       } else {
         ElNotification({
           title: "提示",
-          message: res.data.message,
+          message: res.message,
           type: "error",
         });
       }
@@ -105,8 +107,9 @@ const handleDelete = (row: any) => {
 // 定义编辑组件ref,通过editDrawerRef可以获取组件暴露的实例对象
 const editDrawerRef = ref();
 
+// 组件挂载时加载角色列表
 onMounted(() => {
-  loadRoles();
+  getRoleList();
 });
 </script>
 
