@@ -1,10 +1,6 @@
 import Mock from "mockjs";
 
-/*
- * 使用apifox数据
- */
-
-// 模拟数据
+// 本地使用Mockjs模拟数据
 let List: any = [];
 const count = 200;
 
@@ -44,7 +40,6 @@ export const $getSingleRole = async (id: number) => {
  * @return {{code: number, data: {message: string}}}
  */
 // todo: bug1: 修改角色时，如果roleName重复，应该导致修改失败
-// todo: bug2: 修改角色时，如果此时关闭弹窗，用户名直接消失
 export const $updateRole = async (params: {
   roleId: any;
   roleName: string;
@@ -52,11 +47,10 @@ export const $updateRole = async (params: {
   // let res = await $post("/role/updateRole", params);
   const { roleId, roleName } = params;
 
-  // Check if roleName already exists
+  // 检查是否有重复的roleName
   const isRoleNameExists = List.some(
-    (role: any) => role.roleName == roleName && role.roleId !== roleId
+    (role: any) => role.roleName == roleName
   );
-  console.log(roleName);
   if (isRoleNameExists) {
     return {
       code: -1,
