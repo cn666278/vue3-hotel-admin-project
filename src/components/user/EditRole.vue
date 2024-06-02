@@ -16,13 +16,13 @@
       label-width="70px"
     >
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="formData.roleName" />
+        <el-input v-model="formData.roleName" clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)">
           {{ formData.roleId ? "编辑" : "添加" }}
         </el-button>
-        <el-button @click="resetForm(formRef)">重置</el-button>
+        <el-button @click="handleClose">取消</el-button>
       </el-form-item>
     </el-form>
   </el-drawer>
@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { FormInstance, FormRules, ElNotification } from "element-plus";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import { $addRole, $updateRole } from "../../api/mockData/role.ts";
 
 // 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
@@ -39,11 +39,16 @@ const emit = defineEmits(["update-role-list"]);
 // 抽屉
 const drawer = ref(false);
 
+// 打开抽屉
+const handleOpen = (row: any) => {
+  drawer.value = true;
+  formData.value = { ...row };
+};
+
 // 关闭抽屉
 const handleClose = () => {
   drawer.value = false;
-  formRef.value?.resetFields(); // 重置表单
-  resetForm(formRef.value); // 重置表单
+  resetForm(formRef.value);
 };
 
 // 表单实例
@@ -51,22 +56,22 @@ const formRef = ref<FormInstance>();
 
 // 表单数据
 // 使用ref而不是reactive, 因为ref可以通过.value直接获取值, 而reactive需要通过解构获取
-let formData = ref({
-  roleId: "",
+const formData = ref({
+  roleId: null,
   roleName: "",
 });
 
 // 验证角色名称
 const validateRoleName = (_: any, value: any, callback: any) => {
   if (value === "") {
-    callback(new Error("请输入角色名称"));
+    callback(new Error("角色名称不能为空"));
   } else {
     callback();
   }
 };
 
 // 表单验证
-const rules = reactive<FormRules<typeof formData>>({
+const rules = ref<FormRules<typeof formData>>({
   roleName: [{ required: true, validator: validateRoleName, trigger: "blur" }],
 });
 
@@ -84,13 +89,12 @@ const submitForm = (formEl: FormInstance | undefined) => {
         res = await $addRole(formData.value);
       }
       if (res.code === 200) {
-        console.log(res.data.message);
         ElNotification({
           title: "提示",
           message: res.data.message,
           type: "success",
         });
-        emit("update-role-list"); // 同步列表数据 
+        emit("update-role-list"); // 同步列表数据
         handleClose(); // 关闭抽屉
         console.log("success submit!");
       } else {
@@ -111,10 +115,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
 // 重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  formEl.resetFields();
-  // 重置表单数据
+  formEl.resetFields(); 
   formData.value = {
-    roleId: "",
+    roleId: null,
     roleName: "",
   };
 };
@@ -123,6 +126,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 defineExpose({
   drawer,
   formData,
+  handleOpen
 });
 </script>
 

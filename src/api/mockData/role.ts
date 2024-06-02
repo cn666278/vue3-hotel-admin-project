@@ -5,7 +5,7 @@ import Mock from "mockjs";
  */
 
 // 模拟数据
-let List: object[] = [];
+let List: any = [];
 const count = 200;
 
 for (let i = 0; i < count; i++) {
@@ -25,9 +25,8 @@ for (let i = 0; i < count; i++) {
  * @param
  * @return {{code: number, count: number, data: *[]}}
  */
-export const $getRoleList = async () => {
+export const $getRoleList = () => {
   // let res = await $get("/role/list");
-  // console.log(res);
   return List;
 };
 
@@ -52,10 +51,24 @@ export const $updateRole = async (params: {
 }) => {
   // let res = await $post("/role/updateRole", params);
   const { roleId, roleName } = params;
+
+  // Check if roleName already exists
+  const isRoleNameExists = List.some(
+    (role: any) => role.roleName == roleName && role.roleId !== roleId
+  );
+  console.log(roleName);
+  if (isRoleNameExists) {
+    return {
+      code: -1,
+      data: {
+        message: "角色名已存在，修改失败",
+      },
+    };
+  }
   List = List.map((role: any) => {
     if (role.roleId === roleId) {
       return {
-        ...role, // 为了不丢失其他数据, 展开原有的数据
+        roleId: roleId, // 为了不丢失其他数据, 展开原有的数据
         roleName: roleName, // 更新roleName
       };
     }

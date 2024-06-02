@@ -4,11 +4,12 @@
       <el-button
         type="primary"
         size="small"
-        @click="editDrawerRef.drawer = true"
+        @click="editDrawerRef.handleOpen()"
       >
         添加</el-button
       >
     </div>
+    <!-- 角色表格 -->
     <el-table :data="showRoles" stripe style="width: 100%">
       <el-table-column prop="roleId" label="ID" width="100" />
       <el-table-column prop="roleName" label="角色名称" width="250" />
@@ -27,11 +28,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
     <el-pagination
       style="margin-top: 5px"
       background
       layout="prev, pager, next"
-      :total="roles.length"
+      :total="roleList.length"
       @current-change="handleCurrentChange"
     />
     <EditRole ref="editDrawerRef" @update-role-list="getRoleList"></EditRole>
@@ -41,17 +43,20 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import EditRole from "../../components/user/EditRole.vue";
-import { $getRoleList, $deleteRole, $getSingleRole } from "../../api/mockData/role.ts";
+import {
+  $getRoleList,
+  $deleteRole,
+  $getSingleRole,
+} from "../../api/mockData/role.ts";
 import { ElMessageBox, ElNotification } from "element-plus";
 
 // 角色列表
-// let roles = ref([]);
-let roles = ref<object[]>([]);
+let roleList = ref([]);
 // 分页
 let pageIndex = ref(1);
 // 显示的角色列表
 let showRoles = computed(() => {
-  return roles.value.slice((pageIndex.value - 1) * 10, pageIndex.value * 10);
+  return roleList.value.slice((pageIndex.value - 1) * 10, pageIndex.value * 10);
 });
 
 // 分页改变事件
@@ -62,19 +67,20 @@ const handleCurrentChange = (val: number) => {
 // 加载角色列表
 const getRoleList = async () => {
   console.log("加载角色列表");
-  roles.value = await $getRoleList();
+  roleList.value = await $getRoleList();
 };
 
 // 编辑角色
 const handleEdit = async (row: any) => {
   let res = await $getSingleRole(row.roleId);
-  editDrawerRef.value.formData = res;
-  editDrawerRef.value.drawer = true;
+  editDrawerRef.value.handleOpen(res); // 解决方法
+  // 此处为bug: 思考为什么调用handleOpen方法时, formData的值绑定更新到formData, 并且导致重置表单时formData的值保持为上一个值
+  // editDrawerRef.value.formData = res;
+  // editDrawerRef.value.drawer = true;
 };
 
 // 删除角色
 const handleDelete = (row: any) => {
-  console.log(row);
   ElMessageBox.confirm("确定删除用户 " + row.roleName + " 吗?", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
