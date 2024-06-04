@@ -1,5 +1,15 @@
 <template>
   <div class="user">
+    <!-- 添加按钮 -->
+    <div class="addButton">
+      <el-button
+        type="primary"
+        size="small"
+        @click="editDrawerRef.handleOpen()"
+      >
+        添加</el-button
+      >
+    </div>
     <!-- 用户表格 -->
     <el-table :data="userList" stripe style="width: 100%">
       <el-table-column prop="id" label="编号" width="100" />
@@ -24,10 +34,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 编辑用户抽屉 -->
+    <EditUser ref="editDrawerRef" />
   </div>
 </template>
 
 <script setup lang="ts">
+import EditUser from "../../components/user/EditUser.vue";
 import { onMounted, ref } from "vue";
 import { $getUserList } from "../../api/admin.ts";
 import { ElMessageBox } from "element-plus";
@@ -43,14 +56,10 @@ const getUserList = async () => {
   let { data, count } = await $getUserList({});
   userList.value = data;
   total.value = count;
-  console.log(userList.value);
-  console.log(count);
 };
 
 // 编辑角色
-const handleEdit = async (row: any) => {
-
-};
+const handleEdit = async (row: any) => {};
 
 // 删除角色
 const handleDelete = (row: any) => {
@@ -58,30 +67,33 @@ const handleDelete = (row: any) => {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    // .then(async () => {
-    //   // let res = await $deleteRole(row.roleId);
-    //   if (res.code === 200) {
-    //     ElNotification({
-    //       title: "提示",
-    //       message: res.message,
-    //       type: "success",
-    //     });
-    //     // 删除成功后重新加载角色列表
-    //     getRoleList();
-    //     console.log("删除成功");
-    //   } else {
-    //     ElNotification({
-    //       title: "提示",
-    //       message: res.message,
-    //       type: "error",
-    //     });
-    //   }
-    // })
-    // .catch(() => {
-    //   console.log("取消删除");
-    // });
+  });
+  // .then(async () => {
+  //   // let res = await $deleteRole(row.roleId);
+  //   if (res.code === 200) {
+  //     ElNotification({
+  //       title: "提示",
+  //       message: res.message,
+  //       type: "success",
+  //     });
+  //     // 删除成功后重新加载角色列表
+  //     getRoleList();
+  //     console.log("删除成功");
+  //   } else {
+  //     ElNotification({
+  //       title: "提示",
+  //       message: res.message,
+  //       type: "error",
+  //     });
+  //   }
+  // })
+  // .catch(() => {
+  //   console.log("取消删除");
+  // });
 };
+
+// 定义编辑组件ref,通过editDrawerRef可以获取组件暴露的实例对象
+const editDrawerRef = ref();
 
 // 页面加载时加载用户列表
 onMounted(() => {
@@ -89,4 +101,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.addButton {
+  margin-bottom: 20px;
+}
+</style>

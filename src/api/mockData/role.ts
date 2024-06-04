@@ -2,19 +2,24 @@ import Mock from "mockjs";
 
 // 本地使用Mockjs模拟数据
 let List: any = [];
-const count = 200;
-
-for (let i = 0; i < count; i++) {
-  List.push(
-    Mock.mock({
-      roleId: i + 1,
-      roleName: Mock.Random.cname(),
-    })
-  );
-}
+// const count = 200;
 
 // 初始化数据，模拟200条数据
 // todo: 数据持久化
+// for (let i = 0; i < count; i++) {
+//   List.push(
+//     Mock.mock({
+//       roleId: i + 1,
+//       roleName: Mock.Random.cname(),
+//     })
+//   );
+// }
+
+List = [
+  { roleId: 1, roleName: "超级管理员" },
+  { roleId: 2, roleName: "管理员" },
+  { roleId: 3, roleName: "普通用户" },
+];
 
 /**
  * 获取角色列表

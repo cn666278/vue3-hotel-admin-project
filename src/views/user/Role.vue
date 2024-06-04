@@ -1,6 +1,6 @@
 <template>
   <div class="role">
-    <div class="search">
+    <div class="addButton">
       <el-button
         type="primary"
         size="small"
@@ -120,7 +120,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.search {
+.addButton {
   margin-bottom: 20px;
 }
 </style>
