@@ -10,7 +10,7 @@
       >
     </div>
     <!-- 角色表格 -->
-    <el-table :data="showRoles" stripe style="width: 100%">
+    <el-table :data="showRoles" stripe style="width: 100%" :key="isUpdate.toString()">
       <el-table-column prop="roleId" label="ID" width="100" />
       <el-table-column prop="roleName" label="角色名称" width="250" />
       <el-table-column label="操作">
@@ -56,8 +56,11 @@ let roleList = ref([]);
 let pageIndex = ref(1);
 // 显示的角色列表
 let showRoles = computed(() => {
+  isUpdate.value = !isUpdate.value; // 触发表格更新
   return roleList.value.slice((pageIndex.value - 1) * 10, pageIndex.value * 10);
 });
+// 用于刷新表格数据
+let isUpdate = ref(false);
 
 // 分页改变事件
 const handleCurrentChange = (val: number) => {
@@ -68,6 +71,7 @@ const handleCurrentChange = (val: number) => {
 const getRoleList = async () => {
   console.log("加载角色列表");
   roleList.value = await $getRoleList();
+  isUpdate.value = !isUpdate.value; // 触发表格更新
 };
 
 // 编辑角色
