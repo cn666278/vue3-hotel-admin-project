@@ -25,7 +25,17 @@
         <el-input v-model="formData.username" clearable />
       </el-form-item>
       <el-form-item label="头像" prop="photo">
-        <el-input v-model="formData.photo" clearable />
+        <el-upload
+          class="avatar-uploader"
+          :action="baseURL_dev + '/admin/uploadImg'"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="formData.photo" :src="formData.photo" class="avatar" />
+          <!-- <img v-if="formData.photo" :src="baseURL_dev + 'upload/admin/' + formData.photo" class="avatar" /> -->
+          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+        </el-upload>
       </el-form-item>
       <el-form-item label="角色" prop="roleId">
         <el-select
@@ -58,13 +68,20 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, FormRules, ElNotification } from "element-plus";
+import {
+  FormInstance,
+  FormRules,
+  ElNotification,
+  UploadProps,
+} from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
 import { onMounted, ref } from "vue";
 import {
-  $addRole,
-  $updateRole,
+  // $addRole,
+  // $updateRole,
   $getRoleList,
 } from "../../api/mockData/role.ts";
+import { baseURL_dev } from "../../configure/baseURL.ts";
 
 // 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
 const emit = defineEmits(["update-role-list"]);
@@ -194,6 +211,52 @@ const resetForm = (formEl: FormInstance | undefined) => {
   };
 };
 
+// 上传头像成功
+const handleAvatarSuccess: UploadProps["onSuccess"] = (
+  response,
+  uploadFile
+) => {
+  console.log("上传头像成功");
+  console.log(response);
+  console.log(uploadFile);
+  let { code } = response;
+  if (code === 200) {
+    ElNotification({
+      title: "提示",
+      message: "头像上传成功",
+      type: "success",
+    });
+    // 获取图片地址
+    // formData.value.photo = data.filename;
+
+    // 使用图床模拟图片地址
+    formData.value.photo = "https://s2.loli.net/2024/06/06/K23wDaynLogMWb7.png";
+  }
+  // formData.value.photo = URL.createObjectURL(uploadFile.raw!);
+};
+
+// 头像上传之前
+const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
+  //图片格式
+  let imgTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+  if (!imgTypes.includes(rawFile.type)) {
+    ElNotification({
+      title: "提示",
+      message: "上传头像图片只能是 JPG/PNG/GIF 格式!",
+      type: "error",
+    });
+    return false;
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElNotification({
+      title: "提示",
+      message: "上传头像图片大小不能超过 2MB!",
+      type: "error",
+    });
+    return false;
+  }
+  return true;
+};
+
 // 页面加载时加载角色列表
 onMounted(() => {
   getRoleList();
@@ -207,4 +270,30 @@ defineExpose({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+}
+</style>
