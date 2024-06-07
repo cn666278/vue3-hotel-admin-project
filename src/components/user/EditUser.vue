@@ -2,7 +2,7 @@
   <el-drawer
     size="30%"
     v-model="drawer"
-    :title="formData.loginId ? '编辑用户' : '添加用户'"
+    :title="formData.id ? '编辑用户' : '添加用户'"
     direction="rtl"
     :before-close="handleClose"
   >
@@ -19,7 +19,7 @@
         <el-input v-model="formData.loginId" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="formData.password" />
+        <el-input type="password" v-model="formData.password" />
       </el-form-item>
       <el-form-item label="姓名" prop="username">
         <el-input v-model="formData.username" clearable />
@@ -59,7 +59,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)">
-          {{ formData.roleId ? "编辑" : "添加" }}
+          {{ formData.id ? "编辑" : "添加" }}
         </el-button>
         <el-button @click="handleClose">取消</el-button>
       </el-form-item>
@@ -76,15 +76,12 @@ import {
 } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import { onMounted, ref } from "vue";
-import {
-  // $addRole,
-  // $updateRole,
-  $getRoleList,
-} from "../../api/mockData/role.ts";
+import { $getRoleList } from "../../api/mockData/role.ts";
+import { $addUser } from "../../api/admin.ts";
 import { baseURL_dev } from "../../configure/baseURL.ts";
 
 // 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
-const emit = defineEmits(["update-role-list"]);
+const emit = defineEmits(["update-user-list"]);
 
 // 抽屉
 const drawer = ref(false);
@@ -107,6 +104,7 @@ const formRef = ref<FormInstance>();
 // 表单数据
 // 使用ref而不是reactive, 因为ref可以通过.value直接获取值, 而reactive需要通过解构获取
 const formData = ref({
+  id: null,
   loginId: null,
   username: "",
   password: "",
@@ -122,9 +120,8 @@ const roleList: any = ref([]);
 // 加载角色列表
 const getRoleList = async () => {
   let res = await $getRoleList();
-  console.log("加载角色列表", res);
+  console.log("加载角色列表");
   roleList.value = res;
-  console.log("roleList", roleList.value);
 };
 
 // 验证账号
@@ -164,13 +161,14 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async (valid) => {
     if (valid) {
-      let res;
-      if (formData.value.roleId) {
+      let res: any = {};
+      if (formData.value.id) {
         // 编辑
         // res = await $updateRole(formData.value);
       } else {
         // 添加
-        // res = await $addRole(formData.value);
+        console.log("添加用户");
+        res = await $addUser(formData.value);
       }
       if (res.code === 200) {
         ElNotification({
@@ -178,7 +176,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
           message: res.data.message,
           type: "success",
         });
-        emit("update-role-list"); // 同步列表数据
+        emit("update-user-list"); // 同步列表数据, 通知父组件刷新列表
         handleClose(); // 关闭抽屉
         console.log("success submit!");
       } else {
@@ -201,6 +199,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
   formData.value = {
+    id: null,
     loginId: null,
     username: "",
     password: "",
@@ -230,7 +229,7 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
     // formData.value.photo = data.filename;
 
     // 使用图床模拟图片地址
-    formData.value.photo = "https://s2.loli.net/2024/06/06/K23wDaynLogMWb7.png";
+    formData.value.photo = "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png";
   }
   // formData.value.photo = URL.createObjectURL(uploadFile.raw!);
 };

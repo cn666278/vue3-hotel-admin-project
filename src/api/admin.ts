@@ -45,24 +45,35 @@ let mockData = {
     {
       id: 1,
       loginId: "admin",
-      username: "管理员",
+      username: "超级管理员",
       password: "21232f297a57a5a743894a0e4a801fc3",
       phone: "10086",
       email: "123@gmail.com",
-      photo: "",
+      photo: "https://s2.loli.net/2024/06/07/hjc65p2HRtKYFbG.png",
       role: { roleId: 1, roleName: "超级管理员" },
       roleId: 1,
     },
     {
       id: 2,
       loginId: "user",
-      username: "用户",
+      username: "管理员",
+      password: "21232f297a57a5a743894a0e4a801fc3",
+      phone: "10086",
+      email: "stu@163.edu.com",
+      photo: "https://s2.loli.net/2024/06/07/fID2KtWhqJoMrAH.png",
+      role: { roleId: 2, roleName: "管理员" },
+      roleId: 2,
+    },
+    {
+      id: 3,
+      loginId: "user",
+      username: "普通用户",
       password: "21232f297a57a5a743894a0e4a801fc3",
       phone: "10086",
       email: "helloworld@cf.ac.uk",
-      photo: "",
-      role: { roleId: 2, roleName: "普通用户" },
-      roleId: 2,
+      photo: "https://s2.loli.net/2024/06/07/avPj6oe9tDyOkmn.png",
+      role: { roleId: 3, roleName: "普通用户" },
+      roleId: 3,
     }
   ],
   pageIndex: 1,
@@ -78,4 +89,36 @@ let mockData = {
 export const $getUserList = async (params: object) => {
   // let res = await $get("admin/getUserList", params);
   return mockData;
+}
+
+// 添加用户
+export const $addUser = async (params: any) => {
+  // let res = await $post("admin/addUser", params);
+  console.log(params);
+  // 添加id,防止重复
+  params.id = mockData.data[mockData.data.length - 1].id + 1;
+  // 对密码进行md5加密
+  params.password = md5(
+    md5(params.password, 32).split("").reverse().join(""),
+    32
+  );
+  //判断roleName
+  if (params.roleId == 1) {
+    params.role = { roleId: 1, roleName: "超级管理员" };
+  } else if (params.roleId == 2) {
+    params.role = { roleId: 2, roleName: "管理员" };
+  } else {
+    params.role = { roleId: 3, roleName: "普通用户" };
+  }
+
+  mockData.data.push({
+    ...params,
+  });
+  console.log(mockData);
+  return {
+    code: 200,
+    data: {
+      message: "添加成功",
+    },
+  };
 }
