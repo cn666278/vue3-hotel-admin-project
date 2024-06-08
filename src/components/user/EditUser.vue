@@ -15,10 +15,10 @@
       :rules="rules"
       label-width="70px"
     >
-      <el-form-item label="账号" prop="loginId">
+      <el-form-item v-if="!formData.id" label="账号" prop="loginId">
         <el-input v-model="formData.loginId" />
       </el-form-item>
-      <el-form-item label="密码" prop="password">
+      <el-form-item v-if="!formData.id" label="密码" prop="password">
         <el-input type="password" v-model="formData.password" />
       </el-form-item>
       <el-form-item label="姓名" prop="username">
@@ -77,7 +77,7 @@ import {
 import { Plus } from "@element-plus/icons-vue";
 import { onMounted, ref } from "vue";
 import { $getRoleList } from "../../api/mockData/role.ts";
-import { $addUser } from "../../api/admin.ts";
+import { $addUser, $updateUser } from "../../api/admin.ts";
 import { baseURL_dev } from "../../configure/baseURL.ts";
 
 // 暴露事件, 用于同步列表数据, 在添加成功后调用, 通知父组件刷新列表
@@ -106,12 +106,12 @@ const formRef = ref<FormInstance>();
 const formData = ref({
   id: null,
   loginId: null,
+  roleId: null,
   username: "",
   password: "",
   photo: "",
   phone: "",
   email: "",
-  roleId: null,
 });
 
 // 角色列表
@@ -121,7 +121,6 @@ const roleList: any = ref([]);
 const getRoleList = async () => {
   let res = await $getRoleList();
   console.log("加载角色列表");
-  console.log(res);
   roleList.value = res;
 };
 
@@ -147,6 +146,19 @@ const validatePassword = (_: any, value: any, callback: any) => {
   }
 };
 
+// 邮箱验证
+const validateEmail = (_: any, value: any, callback: any) => {
+  if (value === "" || value === undefined) {
+    callback(new Error("邮箱不能为空"));
+  } else if (
+    !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
+  ) {
+    callback(new Error("邮箱格式不正确"));
+  } else {
+    callback();
+  }
+};
+
 // 表单验证
 const rules = ref<FormRules<typeof formData>>({
   loginId: [{ validator: validateLoginId, required: true, trigger: "blur" }],
@@ -154,7 +166,7 @@ const rules = ref<FormRules<typeof formData>>({
   username: [{ required: true, message: "请输入姓名", trigger: "blur" }],
   roleId: [{ required: true, message: "请选择角色", trigger: "change" }],
   phone: [{ required: true, message: "请输入电话", trigger: "blur" }],
-  email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
+  email: [{ validator: validateEmail, required: true, trigger: "blur" }],
 });
 
 // 提交表单
@@ -165,7 +177,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
       let res: any = {};
       if (formData.value.id) {
         // 编辑
-        // res = await $updateRole(formData.value);
+        res = await $updateUser(formData.value);
       } else {
         // 添加
         console.log("添加用户");
@@ -230,7 +242,8 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
     // formData.value.photo = data.filename;
 
     // 使用图床模拟图片地址
-    formData.value.photo = "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png";
+    formData.value.photo =
+      "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png";
   }
   // formData.value.photo = URL.createObjectURL(uploadFile.raw!);
 };

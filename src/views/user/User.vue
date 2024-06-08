@@ -36,8 +36,8 @@
       :key="isUpdate.toString()"
     >
       <el-table-column prop="id" label="编号" width="100" />
-      <el-table-column prop="loginId" label="账号" width="100" />
-      <el-table-column prop="username" label="姓名" width="100" />
+      <el-table-column prop="loginId" label="账号" width="150" />
+      <el-table-column prop="username" label="姓名" width="150" />
       <el-table-column prop="photo" label="头像" width="100">
         <template #default="scope">
           <el-avatar
@@ -60,7 +60,7 @@
       <el-table-column prop="role.roleName" label="角色" width="150" sortable />
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.row)">
+          <el-button size="small" @click="handleEdit(scope.row.loginId)">
             编辑
           </el-button>
           <el-button
@@ -91,9 +91,9 @@
 <script setup lang="ts">
 import EditUser from "../../components/user/EditUser.vue";
 import { onMounted, ref } from "vue";
-import { $getUserList } from "../../api/admin.ts";
+import { $getUserList, $getUserByLoginId, $deleteUser } from "../../api/admin.ts";
 import { $getRoleList } from "../../api/mockData/role.ts";
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox, ElNotification } from "element-plus";
 
 // 用户列表
 let userList = ref<any>([]);
@@ -135,8 +135,9 @@ const getUserList = async () => {
 };
 
 // 编辑角色
-const handleEdit = async (row: any) => {
-  console.log("编辑用户", row);
+const handleEdit = async (loginId: string) => {
+  let res = await $getUserByLoginId(loginId);
+  editDrawerRef.value.handleOpen(res);
 };
 
 // 删除角色
@@ -145,29 +146,29 @@ const handleDelete = (row: any) => {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
+  })
+  .then(async () => {
+    let res = await $deleteUser(row.roleId);
+    if (res.code === 200) {
+      ElNotification({
+        title: "提示",
+        message: res.data.message,
+        type: "success",
+      });
+      // 删除成功后重新加载用户列表
+      getUserList();
+      console.log("删除成功");
+    } else {
+      ElNotification({
+        title: "提示",
+        message: res.data.message,
+        type: "error",
+      });
+    }
+  })
+  .catch(() => {
+    console.log("取消删除");
   });
-  // .then(async () => {
-  //   // let res = await $deleteRole(row.roleId);
-  //   if (res.code === 200) {
-  //     ElNotification({
-  //       title: "提示",
-  //       message: res.message,
-  //       type: "success",
-  //     });
-  //     // 删除成功后重新加载角色列表
-  //     getRoleList();
-  //     console.log("删除成功");
-  //   } else {
-  //     ElNotification({
-  //       title: "提示",
-  //       message: res.message,
-  //       type: "error",
-  //     });
-  //   }
-  // })
-  // .catch(() => {
-  //   console.log("取消删除");
-  // });
 };
 
 // 定义编辑组件ref,通过editDrawerRef可以获取组件暴露的实例对象

@@ -31,20 +31,13 @@ export const $Login = async (params: object | any) => {
   return res;
 };
 
-//获取一个用户的信息
-export const $getUserInfo = async (params: object) => {
-  let res = await $get("admin/getUserInfo", params);
-  console.log(res);
-  return res;
-};
-
 // 模拟数据
 let mockData = {
   count: 1,
   data: [
     {
       id: 1,
-      loginId: "admin",
+      loginId: "super-admin",
       username: "超级管理员",
       password: "21232f297a57a5a743894a0e4a801fc3",
       phone: "10086",
@@ -55,7 +48,7 @@ let mockData = {
     },
     {
       id: 2,
-      loginId: "user",
+      loginId: "admin",
       username: "管理员",
       password: "21232f297a57a5a743894a0e4a801fc3",
       phone: "10086",
@@ -81,6 +74,17 @@ let mockData = {
 };
 
 /**
+ * 通过loginId获取一个用户的信息
+ * @param
+ * @return user
+ */
+
+export const $getUserByLoginId = async (loginId: string) => {
+  const user = mockData.data.find((user) => user.loginId === loginId);
+  return user;
+};
+
+/**
  * 获取用户列表
  * @param：{ roleId: 角色编号（默认为0）, pageIndex：当前页（默认为1）, pageSize：每页显示数据条数（默认为10） }
  * @return {{count: number, data: *[], pageIndex: number, pageSize: number}}
@@ -95,7 +99,7 @@ export const $getUserList = async (params: {
   const end = start + pageSize;
   let userList = mockData.data;
   // 对userList查询当前roleId (默认roleId为0表示全查)
-  if(roleId != 0){
+  if (roleId != 0) {
     userList = userList.filter((user) => user.roleId === roleId);
   }
   // 分页
@@ -137,6 +141,68 @@ export const $addUser = async (params: any) => {
     code: 200,
     data: {
       message: "添加成功",
+    },
+  };
+};
+
+/**
+ * 修改用户
+ * @param id, username, phone, email, photo, roleId
+ * @return {{code: number, data: {message: string}}}
+ */
+export const $updateUser = async (params: {
+  id: number | any;
+  roleId: number | any;
+  username: string;
+  phone: string;
+  email: string;
+  photo: string;
+}) => {
+  // let res = await $post("admin/updateUser", params);
+  const { id, username, phone, email, photo, roleId } = params;
+  //判断roleName
+  let roleName = "";
+  if (roleId == 1) {
+    roleName = "超级管理员";
+  } else if (roleId == 2) {
+    roleName = "管理员";
+  } else {
+    roleName = "普通用户";
+  }
+  mockData.data = mockData.data.map((user) => {
+    if (user.id === id) {
+      return {
+        ...user,
+        username,
+        phone,
+        email,
+        photo,
+        roleId,
+        role: { roleId, roleName },
+      };
+    }
+    return user;
+  });
+  return {
+    code: 200,
+    data: {
+      message: "修改成功",
+    },
+  };
+};
+
+/**
+ * 删除用户
+ * @param id
+ * @return {{code: number, data: {message: string}}}
+ */
+export const $deleteUser = async (id: number) => {
+  // let res = await $post("admin/deleteUser", { id });
+  mockData.data = mockData.data.filter((user) => user.id !== id);
+  return {
+    code: 200,
+    data: {
+      message: "删除成功",
     },
   };
 };
