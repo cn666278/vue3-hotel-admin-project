@@ -121,6 +121,7 @@ const roleList: any = ref([]);
 const getRoleList = async () => {
   let res = await $getRoleList();
   console.log("加载角色列表");
+  console.log(res);
   roleList.value = res;
 };
 

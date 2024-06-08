@@ -28,6 +28,8 @@ List = [
  */
 export const $getRoleList = () => {
   // let res = await $get("/role/list");
+  // 删除roleId为0的数据
+  List = List.filter((role: any) => role.roleId !== 0);
   return List;
 };
 
