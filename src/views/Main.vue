@@ -69,7 +69,7 @@
           <el-sub-menu index="admin">
             <template #title>
               <el-icon><User /></el-icon>
-              管理员
+              {{ userStore.user.username }}
             </template>
             <el-menu-item index="/personal">个人中心</el-menu-item>
             <el-menu-item index="/set-password">修改密码</el-menu-item>
