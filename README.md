@@ -1,5 +1,7 @@
 # Vue 3 + TypeScript + Vite + Element Plus
 
+<img src="screenshot_vue.png" style="width: 1000px;">
+
 项目简介：Vue酒店后台管理系统
 - 项目简介：一个后台前端解决方案,使用了许多最新的前端技术栈、动态路由，权限验证，并且有着丰富的组件和功能。
 -	主要技术栈： Vue3、Vite、TypeScript、Pinia、Element Plus、Axios、Vue Router
