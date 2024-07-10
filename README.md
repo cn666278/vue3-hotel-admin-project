@@ -2,7 +2,7 @@
 
 项目简介：Vue酒店后台管理系统
 - 项目简介：一个后台前端解决方案,使用了许多最新的前端技术栈、动态路由，权限验证，并且有着丰富的组件和功能。
--	主要技术栈： Vue3、Vite、JavaScript、Pinia、Element Plus、Axios、Vue Router
+-	主要技术栈： Vue3、Vite、TypeScript、Pinia、Element Plus、Axios、Vue Router
 -	主要工作：
   1.  项目使用Vite脚手架搭建，配合使用Element Plus，使用vite自动生成路由，优化路由
   2.	实现用户表单中的新增，编辑和删除功能，日期格式化以及表单验证。
