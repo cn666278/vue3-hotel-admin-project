@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 export default defineStore("user", {
   state: () => ({
     user: {
+      id: 0,
       username: "admin",
       loginId: "",
       photo: "",
@@ -16,6 +17,7 @@ export default defineStore("user", {
   }),
   actions: {
     setUser(user: {
+      id: number;
       username: string;
       loginId: string;
       photo: string;
@@ -28,6 +30,7 @@ export default defineStore("user", {
     clearUser() {
       sessionStorage.clear();
       this.user = {
+        id: 0,
         username: "",
         loginId: "",
         photo: "",

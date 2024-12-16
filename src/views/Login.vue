@@ -78,7 +78,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate(async (valid) => {
     if (valid) {
-      let res = await $Login(formData)
+      let res = await $Login({...formData})
       if( res.code == 200 ) {
         let user = await $getUserInfo({username: formData.username})
         console.log(user)

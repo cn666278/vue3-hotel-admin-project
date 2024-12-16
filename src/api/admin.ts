@@ -213,3 +213,47 @@ export const $deleteUser = async (id: number) => {
     },
   };
 };
+
+/**
+ * 修改密码
+ * @param id, oldPassword, newPassword
+ * @return {{code: number, data: {message: string}}}
+ */
+export const $updatePassword = async (params: {
+  id: number | null;
+  oldPwd: string;
+  newPwd: string;
+  confirmPwd: string;
+}) => {
+  // let res = await $post("admin/updatePassword", params);
+  const { id, oldPwd, newPwd } = params;
+  // 对密码进行md5加密
+  const oldPassword = md5(md5(oldPwd, 32).split("").reverse().join(""), 32);
+  const newPassword = md5(md5(newPwd, 32).split("").reverse().join(""), 32);
+  // 判断旧密码是否正确
+  const user = mockData.data.find((user) => user.id === id);
+  if (!user || user.password !== oldPassword) {
+    return {
+      code: 400,
+      data: {
+        message: "旧密码错误",
+      },
+    };
+  }
+  // 修改密码
+  mockData.data = mockData.data.map((user) => {
+    if (user.id === id) {
+      return {
+        ...user,
+        password: newPassword,
+      };
+    }
+    return user;
+  });
+  return {
+    code: 200,
+    data: {
+      message: "修改成功",
+    },
+  };
+};
