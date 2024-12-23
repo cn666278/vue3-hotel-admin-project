@@ -10,7 +10,7 @@
       >
     </div>
     <!-- 角色表格 -->
-    <el-table :data="showRoles" stripe style="width: 100%" :key="isUpdate.toString()">
+    <el-table :data="roleList" stripe style="width: 100%" :key="isUpdate.toString()">
       <el-table-column prop="roleId" label="ID" width="100" />
       <el-table-column prop="roleName" label="角色名称" width="250" />
       <el-table-column label="操作">
@@ -33,15 +33,17 @@
       style="margin-top: 5px"
       background
       layout="prev, pager, next"
-      :total="roleList.length"
-      @current-change="handleCurrentChange"
+      :total="total"
+      v-model:current-page="pageIndex"
+      :default-page-size="pageSize"
+      @current-change="getRoleList"
     />
     <EditRole ref="editDrawerRef" @update-role-list="getRoleList"></EditRole>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
 import EditRole from "../../components/user/EditRole.vue";
 import {
   $getRoleList,
@@ -54,23 +56,20 @@ import { ElMessageBox, ElNotification } from "element-plus";
 let roleList = ref([]);
 // 分页
 let pageIndex = ref(1);
-// 显示的角色列表
-let showRoles = computed(() => {
-  isUpdate.value = !isUpdate.value; // 触发表格更新
-  return roleList.value.slice((pageIndex.value - 1) * 10, pageIndex.value * 10);
-});
+let pageSize = ref(1);
+let total = ref(0);
 // 用于刷新表格数据
 let isUpdate = ref(false);
-
-// 分页改变事件
-const handleCurrentChange = (val: number) => {
-  pageIndex.value = val;
-};
 
 // 加载角色列表
 const getRoleList = async () => {
   console.log("加载角色列表");
-  roleList.value = await $getRoleList();
+  let { data, count } = await $getRoleList({
+    pageIndex: pageIndex.value,
+    pageSize: pageSize.value,
+  });
+  roleList.value = data;
+  total.value = count;
   isUpdate.value = !isUpdate.value; // 触发表格更新
 };
 

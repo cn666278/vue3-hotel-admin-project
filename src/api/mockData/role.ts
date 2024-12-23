@@ -22,16 +22,38 @@ List = [
 ];
 
 /**
- * 获取角色列表
+ * 获取角色列表（分页）
  * @param
  * @return {{code: number, count: number, data: *[]}}
  */
-export const $getRoleList = () => {
+export const $getRoleList = (params: {
+  pageIndex: number;
+  pageSize: number;
+}) => {
   // let res = await $get("/role/list");
   // 删除roleId为0的数据
   List = List.filter((role: any) => role.roleId !== 0);
-  return List;
+  let count = List.length;
+  const { pageIndex, pageSize } = params;
+  const start = (pageIndex - 1) * pageSize;
+  const end = start + pageSize;
+  let roleList = List.slice(start, end);
+  return {
+    count: count,
+    data: roleList,
+  };
 };
+
+/**
+ * 获取所有角色列表
+ * @param
+ * @return {{code: number, count: number, data: *[]}}
+ */
+export const $getRoleAllList = async () => {
+  // let res = await $get("/role/list");
+  // List = List.filter((role: any) => role.roleId !== 0);
+  return List;
+}
 
 // 获取单个角色
 export const $getSingleRole = async (id: number) => {

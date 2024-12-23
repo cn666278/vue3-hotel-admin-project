@@ -80,7 +80,7 @@
       layout="prev, pager, next"
       :total="total"
       v-model:current-page="pageIndex"
-      :default-page-size="10"
+      :default-page-size="pageSize"
       @current-change="getUserList"
     />
     <!-- 编辑用户抽屉 -->
@@ -92,7 +92,7 @@
 import EditUser from "../../components/user/EditUser.vue";
 import { onMounted, ref } from "vue";
 import { $getUserList, $getUserByLoginId, $deleteUser } from "../../api/admin.ts";
-import { $getRoleList } from "../../api/mockData/role.ts";
+import { $getRoleAllList } from "../../api/mockData/role.ts";
 import { ElMessageBox, ElNotification } from "element-plus";
 
 // 用户列表
@@ -100,7 +100,7 @@ let userList = ref<any>([]);
 
 // 分页
 let pageIndex = ref(1);
-
+let pageSize = ref(5);
 let total = ref(0);
 
 // 用于刷新表格数据,
@@ -116,7 +116,7 @@ const roleList: any = ref([]);
 // 加载角色列表
 const getRoleList = async () => {
   console.log("加载角色列表");
-  let res = await $getRoleList();
+  let res = await $getRoleAllList();
   roleList.value = res;
   roleList.value.unshift({ roleId: 0, roleName: "全部角色" });
 };
@@ -126,7 +126,7 @@ const getUserList = async () => {
   console.log("加载用户列表");
   let { data, count } = await $getUserList({
     pageIndex: pageIndex.value,
-    pageSize: 10,
+    pageSize: pageSize.value,
     roleId: roleId.value,
   });
   userList.value = data;

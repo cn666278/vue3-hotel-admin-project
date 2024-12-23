@@ -115,8 +115,6 @@ export const $getUserList = async (params: {
   return {
     count: mockData.data.length,
     data: userList,
-    pageIndex,
-    pageSize,
   };
 };
 

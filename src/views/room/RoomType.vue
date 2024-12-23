@@ -13,7 +13,7 @@
         添加</el-button>
     </div>
     <!-- 房间类型表格 -->
-    <el-table :data="showRoomTypes" stripe style="width: 100%" :key="isUpdate.toString()">
+    <el-table :data="roomTypeList" stripe style="width: 100%" :key="isUpdate.toString()">
       <el-table-column prop="id" label="房间编号" width="100" />
       <el-table-column prop="roomTypeName" label="房间类型" width="120" />
       <el-table-column prop="roomTypePrice" label="房间价格" width="120" />
@@ -39,15 +39,15 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <el-pagination style="margin-top: 5px" background layout="prev, pager, next" :total="roomTypeList.length"
-      v-model:current-page="pageIndex" :default-page-size="pageSize" @current-change="handleCurrentChange" />
+    <el-pagination style="margin-top: 5px" background layout="prev, pager, next" :total="total"
+      v-model:current-page="pageIndex" :default-page-size="pageSize" @current-change="getRoomTypeList" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ElMessageBox } from 'element-plus';
 import { $getRoomTypeList } from '../../api/roomType'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // 用于刷新表格数据,
 // 当用户列表数据发生变化时, 修改该值, 绑定表格key, 触发表格更新
@@ -58,25 +58,16 @@ const roomTypeList = ref<any>([])
 // 分页
 let pageIndex = ref(1);
 let pageSize = ref(5);
-
-// 分页改变事件
-const handleCurrentChange = (val: number) => {
-  pageIndex.value = val;
-};
-
-// 获取所有房型
-const showRoomTypes = computed(() => {
-  isUpdate.value = !isUpdate.value; // update role list
-  const start = (pageIndex.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return roomTypeList.value.slice(start, end);
-});
+let total = ref(0);
 
 // 加载房间类型列表
 const getRoomTypeList = async () => {
-  console.log("加载用户列表");
-  let { data } = await $getRoomTypeList();
-  roomTypeList.value = data;
+  let { data, count } = await $getRoomTypeList();
+  isUpdate.value = !isUpdate.value; // update role list
+  const start = (pageIndex.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  roomTypeList.value = data.slice(start, end);
+  total.value = count;
 };
 
 // 定义编辑组件ref,通过editDrawerRef可以获取组件暴露的实例对象

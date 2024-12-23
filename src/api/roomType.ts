@@ -85,5 +85,6 @@ export const $getRoomTypeList = async () => {
   let res = mockData.data;
   return {
     data: res,
+    count: mockData.count,
   };
 };
